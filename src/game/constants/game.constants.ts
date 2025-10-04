@@ -16,6 +16,10 @@ export type CardType = (typeof CARD_TYPES)[number];
 export const GRID_COLUMNS = ['A', 'B', 'C', 'D'] as const;
 export const GRID_ROWS = ['1', '2', '3', '4'] as const;
 
+// Aliases for backward compatibility and testing
+export const COLUMNS = GRID_COLUMNS;
+export const ROWS = GRID_ROWS;
+
 export const GRID_SIZE = {
   COLUMNS: 4,
   ROWS: 4,
