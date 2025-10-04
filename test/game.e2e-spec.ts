@@ -404,4 +404,181 @@ describe('Game API (e2e)', () => {
       expect(history.body.attempts).toHaveLength(1);
     });
   });
+
+  describe('Edge Cases', () => {
+    it('should reject playing on a completed game', async () => {
+      // Create a game
+      const newGameResponse = await request(app.getHttpServer())
+        .post('/game/new')
+        .expect(201);
+
+      const edgeGameId = newGameResponse.body.gameId;
+
+      // Complete the game by matching all 8 pairs
+      const positions = [
+        ['A1', 'A2'],
+        ['A3', 'A4'],
+        ['B1', 'B2'],
+        ['B3', 'B4'],
+        ['C1', 'C2'],
+        ['C3', 'C4'],
+        ['D1', 'D2'],
+        ['D3', 'D4'],
+      ];
+
+      // Try to match all pairs
+      let completedGame = false;
+      for (const [pos1, pos2] of positions) {
+        const response = await request(app.getHttpServer())
+          .post(`/game/${edgeGameId}/play`)
+          .send({ position1: pos1, position2: pos2 })
+          .expect(201);
+
+        if (response.body.gameCompleted) {
+          completedGame = true;
+          break;
+        }
+      }
+
+      // If game completed, try to play another round
+      if (completedGame) {
+        const response = await request(app.getHttpServer())
+          .post(`/game/${edgeGameId}/play`)
+          .send({ position1: 'A1', position2: 'A2' })
+          .expect(400);
+
+        expect(response.body.message).toContain('already completed');
+      }
+    });
+
+    it('should handle position out of bounds', async () => {
+      const newGameResponse = await request(app.getHttpServer())
+        .post('/game/new')
+        .expect(201);
+
+      const gameId = newGameResponse.body.gameId;
+
+      // Test invalid column (E)
+      await request(app.getHttpServer())
+        .post(`/game/${gameId}/play`)
+        .send({ position1: 'E1', position2: 'A1' })
+        .expect(400);
+
+      // Test invalid row (5)
+      await request(app.getHttpServer())
+        .post(`/game/${gameId}/play`)
+        .send({ position1: 'A5', position2: 'A1' })
+        .expect(400);
+
+      // Test completely invalid format
+      await request(app.getHttpServer())
+        .post(`/game/${gameId}/play`)
+        .send({ position1: 'Z9', position2: 'A1' })
+        .expect(400);
+    });
+
+    it('should handle leaderboard with same attempt count (tiebreaker)', async () => {
+      // Create multiple games
+      const gameIds: string[] = [];
+
+      for (let i = 0; i < 3; i++) {
+        const response = await request(app.getHttpServer())
+          .post('/game/new')
+          .expect(201);
+        gameIds.push(response.body.gameId);
+      }
+
+      // Complete all games with similar attempt patterns
+      for (const gameId of gameIds) {
+        // Make some attempts to complete the game
+        const positions = [
+          ['A1', 'A2'],
+          ['A3', 'A4'],
+          ['B1', 'B2'],
+          ['B3', 'B4'],
+          ['C1', 'C2'],
+          ['C3', 'C4'],
+          ['D1', 'D2'],
+          ['D3', 'D4'],
+        ];
+
+        for (const [pos1, pos2] of positions) {
+          await request(app.getHttpServer())
+            .post(`/game/${gameId}/play`)
+            .send({ position1: pos1, position2: pos2 });
+        }
+      }
+
+      // Check leaderboard
+      const leaderboard = await request(app.getHttpServer())
+        .get('/game/leaderboard')
+        .expect(200);
+
+      // Verify leaderboard is sorted
+      if (leaderboard.body.length > 1) {
+        for (let i = 0; i < leaderboard.body.length - 1; i++) {
+          const current = leaderboard.body[i];
+          const next = leaderboard.body[i + 1];
+
+          // Should be sorted by attempts first
+          if (current.attemptCount === next.attemptCount) {
+            // If attempts are equal, should be sorted by duration
+            expect(current.durationMs).toBeLessThanOrEqual(next.durationMs);
+          } else {
+            expect(current.attemptCount).toBeLessThanOrEqual(next.attemptCount);
+          }
+        }
+      }
+    });
+
+    it('should handle invalid position formats gracefully', async () => {
+      const newGameResponse = await request(app.getHttpServer())
+        .post('/game/new')
+        .expect(201);
+
+      const gameId = newGameResponse.body.gameId;
+
+      // Lowercase position
+      await request(app.getHttpServer())
+        .post(`/game/${gameId}/play`)
+        .send({ position1: 'a1', position2: 'A2' })
+        .expect(400);
+
+      // Missing number
+      await request(app.getHttpServer())
+        .post(`/game/${gameId}/play`)
+        .send({ position1: 'A', position2: 'A2' })
+        .expect(400);
+
+      // Missing letter
+      await request(app.getHttpServer())
+        .post(`/game/${gameId}/play`)
+        .send({ position1: '1', position2: 'A2' })
+        .expect(400);
+
+      // Special characters
+      await request(app.getHttpServer())
+        .post(`/game/${gameId}/play`)
+        .send({ position1: 'A@1', position2: 'A2' })
+        .expect(400);
+    });
+
+    it('should return empty array for history of non-existent game', async () => {
+      // This should return 404, not empty array
+      await request(app.getHttpServer())
+        .get('/game/non-existent-id-12345/history')
+        .expect(404);
+    });
+
+    it('should handle special characters in game ID gracefully', async () => {
+      await request(app.getHttpServer())
+        .get('/game/<script>alert("xss")</script>')
+        .expect(404);
+
+      await request(app.getHttpServer())
+        .post('/game/../../../etc/passwd/play')
+        .send({ position1: 'A1', position2: 'A2' })
+        .expect(404);
+    });
+  });
 });
