@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  # MongoDB Service
+  mongodb:
+    image: mongo:7.0
+    container_name: kids-memory-game-mongodb-prod
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: kids-memory-game
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_prod:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/kids-memory-game --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NestJS API Service (Production)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: kids-memory-game-api-prod
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://mongodb:27017/kids-memory-game
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - app-network
+
+volumes:
+  mongodb_data_prod:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
