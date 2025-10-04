@@ -46,6 +46,16 @@ export class GameController {
   }
 
   /**
+   * GET /game/leaderboard - Get top 5 games
+   * Returns top 5 completed games sorted by fewest attempts, then quickest time
+   * NOTE: This must come BEFORE :gameId route to avoid route conflict
+   */
+  @Get('leaderboard')
+  async getLeaderboard() {
+    return this.gameService.getLeaderboard();
+  }
+
+  /**
    * GET /game/:gameId - Get current game state
    * Returns game status, matched cards, and attempt count
    * Does not reveal unmatched card values
@@ -62,14 +72,5 @@ export class GameController {
   @Get(':gameId/history')
   async getGameHistory(@Param('gameId') gameId: string) {
     return this.gameService.getGameHistory(gameId);
-  }
-
-  /**
-   * GET /leaderboard - Get top 5 games
-   * Returns top 5 completed games sorted by fewest attempts, then quickest time
-   */
-  @Get('leaderboard')
-  async getLeaderboard() {
-    return this.gameService.getLeaderboard();
   }
 }
