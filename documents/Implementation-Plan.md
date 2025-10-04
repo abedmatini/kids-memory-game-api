@@ -100,15 +100,15 @@ Building a backend API for a 4x4 memory card matching game with persistence and 
 
 ### Phase 4: API Endpoints
 
-**Status**: Pending
+**Status**: ✅ COMPLETED (5/5 completed)
 
-11. **POST /game/new - Start New Game**
+11. **POST /game/new - Start New Game** ✅ **COMPLETED**
     - Generate unique game ID
     - Shuffle and create board
     - Save to database
     - Return game ID and success message
 
-12. **POST /game/:gameId/play - Submit Card Pair**
+12. **POST /game/:gameId/play - Submit Card Pair** ✅ **COMPLETED**
     - Accept game ID and 2 card positions
     - Validate inputs
     - Check game status (not completed)
@@ -119,17 +119,17 @@ Building a backend API for a 4x4 memory card matching game with persistence and 
     - Return match result and card values
     - Check if game is won (all cards matched)
 
-13. **GET /game/:gameId - Get Game State**
+13. **GET /game/:gameId - Get Game State** ✅ **COMPLETED**
     - Retrieve current game state
     - Return matched cards positions
     - Return game status and attempt count
     - Don't reveal unmatched card values
 
-14. **GET /game/:gameId/history - Get Attempt History**
+14. **GET /game/:gameId/history - Get Attempt History** ✅ **COMPLETED**
     - Retrieve all attempts for a game
     - Return chronological list of attempts
 
-15. **GET /leaderboard - Get Top 5 Games**
+15. **GET /leaderboard - Get Top 5 Games** ✅ **COMPLETED**
     - Query completed games
     - Sort by: attempts (ascending), then duration (ascending)
     - Limit to top 5
@@ -139,9 +139,9 @@ Building a backend API for a 4x4 memory card matching game with persistence and 
 
 ### Phase 5: Validation & Error Handling
 
-**Status**: Pending
+**Status**: In Progress (1/3 completed)
 
-16. **Input Validation**
+16. **Input Validation** ✅ **COMPLETED**
     - DTOs (Data Transfer Objects) for all endpoints
     - Validate card position format
     - Validate game ID format

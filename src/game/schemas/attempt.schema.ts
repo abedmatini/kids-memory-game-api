@@ -29,4 +29,3 @@ export const AttemptSchema = SchemaFactory.createForClass(Attempt);
 // Create indexes for better query performance
 AttemptSchema.index({ gameId: 1, attemptNumber: 1 });
 AttemptSchema.index({ timestamp: 1 });
-

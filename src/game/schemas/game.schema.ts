@@ -37,4 +37,3 @@ export const GameSchema = SchemaFactory.createForClass(Game);
 // Create indexes for better query performance
 GameSchema.index({ status: 1 });
 GameSchema.index({ attemptCount: 1, endTime: 1 }); // For leaderboard queries
-

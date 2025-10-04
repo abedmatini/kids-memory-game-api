@@ -33,11 +33,17 @@ export function isValidPosition(position: string): position is CardPosition {
   if (position.length !== 2) return false;
   const col = position[0];
   const row = position[1];
-  return GRID_COLUMNS.includes(col as GridColumn) && GRID_ROWS.includes(row as GridRow);
+  return (
+    GRID_COLUMNS.includes(col as GridColumn) &&
+    GRID_ROWS.includes(row as GridRow)
+  );
 }
 
 // Convert position to array indices
-export function positionToIndices(position: CardPosition): { row: number; col: number } {
+export function positionToIndices(position: CardPosition): {
+  row: number;
+  col: number;
+} {
   const colIndex = GRID_COLUMNS.indexOf(position[0] as GridColumn);
   const rowIndex = GRID_ROWS.indexOf(position[1] as GridRow);
   return { row: rowIndex, col: colIndex };
@@ -45,6 +51,5 @@ export function positionToIndices(position: CardPosition): { row: number; col: n
 
 // Convert array indices to position
 export function indicesToPosition(row: number, col: number): CardPosition {
-  return `${GRID_COLUMNS[col]}${GRID_ROWS[row]}` as CardPosition;
+  return `${GRID_COLUMNS[col]}${GRID_ROWS[row]}`;
 }
-

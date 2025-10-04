@@ -1,8 +1,8 @@
 # Progress Tracker - Kids Memory Game API
 
 **Project Start Date**: 2025-10-04  
-**Current Phase**: Phase 4 - API Endpoints  
-**Overall Progress**: 10/25 steps completed (40%)
+**Current Phase**: Phase 5 - Validation & Error Handling  
+**Overall Progress**: 16/25 steps completed (64%)
 
 ---
 
@@ -227,35 +227,133 @@
 
 ---
 
-## Phase 4: API Endpoints (0/5 completed)
+## Phase 4: API Endpoints (5/5 completed) ✅
 
-### ⏳ Step 11: POST /game/new - Start New Game
+### ✅ Step 11: POST /game/new - Start New Game - **COMPLETED**
 
-**Status**: Pending
+**Status**: ✅ Done  
+**Started**: 2025-10-04  
+**Completed**: 2025-10-04
 
-### ⏳ Step 12: POST /game/:gameId/play - Submit Card Pair
+**Tasks**:
 
-**Status**: Pending
+- [x] Generate unique game ID
+- [x] Shuffle and create board
+- [x] Save to database
+- [x] Return game ID and success message
 
-### ⏳ Step 13: GET /game/:gameId - Get Game State
+**Notes**:
 
-**Status**: Pending
+- Implemented POST /game/new endpoint
+- Returns gameId and success message
+- Uses service layer's createNewGame() method
+- Properly handles errors with HTTP exceptions
 
-### ⏳ Step 14: GET /game/:gameId/history - Get Attempt History
+### ✅ Step 12: POST /game/:gameId/play - Submit Card Pair - **COMPLETED**
 
-**Status**: Pending
+**Status**: ✅ Done  
+**Started**: 2025-10-04  
+**Completed**: 2025-10-04
 
-### ⏳ Step 15: GET /leaderboard - Get Top 5 Games
+**Tasks**:
 
-**Status**: Pending
+- [x] Accept game ID and 2 card positions
+- [x] Validate inputs using DTOs
+- [x] Check game status (not completed)
+- [x] Reveal card values
+- [x] Check for match
+- [x] Update game state
+- [x] Save attempt history
+- [x] Return match result and card values
+- [x] Check if game is won
+
+**Notes**:
+
+- Implemented POST /game/:gameId/play endpoint
+- Created PlayRoundDto with validation decorators
+- Returns card values, match status, and game completion status
+- All validations handled in service layer
+
+### ✅ Step 13: GET /game/:gameId - Get Game State - **COMPLETED**
+
+**Status**: ✅ Done  
+**Started**: 2025-10-04  
+**Completed**: 2025-10-04
+
+**Tasks**:
+
+- [x] Retrieve current game state
+- [x] Return matched cards positions
+- [x] Return game status and attempt count
+- [x] Don't reveal unmatched card values
+
+**Notes**:
+
+- Implemented GET /game/:gameId endpoint
+- Returns gameId, status, matchedCards, attemptCount, timestamps
+- Does not expose unmatched card values (security)
+
+### ✅ Step 14: GET /game/:gameId/history - Get Attempt History - **COMPLETED**
+
+**Status**: ✅ Done  
+**Started**: 2025-10-04  
+**Completed**: 2025-10-04
+
+**Tasks**:
+
+- [x] Retrieve all attempts for a game
+- [x] Return chronological list of attempts
+
+**Notes**:
+
+- Implemented GET /game/:gameId/history endpoint
+- Returns array of all attempts with positions, values, match status, timestamps
+- Sorted chronologically by attempt number
+
+### ✅ Step 15: GET /leaderboard - Get Top 5 Games - **COMPLETED**
+
+**Status**: ✅ Done  
+**Started**: 2025-10-04  
+**Completed**: 2025-10-04
+
+**Tasks**:
+
+- [x] Query completed games
+- [x] Sort by: attempts (ascending), then duration (ascending)
+- [x] Limit to top 5
+- [x] Return game ID, attempts, and completion time
+
+**Notes**:
+
+- Implemented GET /leaderboard endpoint
+- Correct sorting: fewest attempts first, then quickest time
+- Returns top 5 completed games only
+- Includes duration calculation in milliseconds
 
 ---
 
-## Phase 5: Validation & Error Handling (0/3 completed)
+## Phase 5: Validation & Error Handling (1/3 completed)
 
-### ⏳ Step 16: Input Validation
+### ✅ Step 16: Input Validation - **COMPLETED**
 
-**Status**: Pending
+**Status**: ✅ Done  
+**Started**: 2025-10-04  
+**Completed**: 2025-10-04
+
+**Tasks**:
+
+- [x] DTOs (Data Transfer Objects) for all endpoints
+- [x] Validate card position format
+- [x] Validate game ID format
+- [x] Custom validation pipes
+
+**Notes**:
+
+- Created PlayRoundDto with class-validator decorators
+- Validates position format (A-D, 1-4) using regex
+- Validates duplicate positions
+- Global ValidationPipe enabled in main.ts
+- Automatic transformation and validation for all requests
 
 ### ⏳ Step 17: Error Handling
 
@@ -319,7 +417,10 @@
 - ✅ **Phase 1 Complete!** All infrastructure setup done
 - ✅ **Phase 2 Complete!** Database schemas designed and created
 - ✅ **Phase 3 Complete!** All core game logic implemented
-- Starting Phase 4: API Endpoints
+- ✅ **Phase 4 Complete!** All 5 API endpoints implemented with validation
+- ✅ **Completed Steps 11-15**: All API endpoints (new game, play, get state, history, leaderboard)
+- ✅ **Completed Step 16**: Input validation with DTOs and class-validator
+- Starting Phase 5: Error Handling & Response Standardization
 
 ---
 
@@ -331,6 +432,8 @@
 - ✅ API returns: Actual card values + match status
 - ✅ Game persistence: Indefinite storage in DB
 - ✅ Validation: All 6 levels (matched cards, format, bounds, duplicates, game exists, completed status)
+- ✅ DTOs: Created for input validation with class-validator decorators
+- ✅ HTTP Exceptions: Using NestJS built-in exception classes
 
 ---
 
@@ -342,11 +445,10 @@
 
 ## Next Steps
 
-1. **Immediate**: Install NestJS CLI
-2. **Then**: Generate NestJS project
-3. **Then**: Complete Step 1 tasks
-4. **Then**: Move to Step 2
+1. **Immediate**: Complete Step 17 - Error Handling (Global Exception Filter)
+2. **Then**: Complete Step 18 - Response Standardization
+3. **Then**: Move to Phase 6 - Testing
 
 ---
 
-**Last Updated**: 2025-10-04 12:45
+**Last Updated**: 2025-10-04 (Phase 4 & Step 16 Complete)

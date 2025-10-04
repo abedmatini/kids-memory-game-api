@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
@@ -58,7 +62,7 @@ export class GameService {
     const game = await this.getGameById(gameId);
 
     if (!game) {
-      throw new Error('Game not found');
+      throw new NotFoundException(`Game with ID '${gameId}' not found`);
     }
 
     return {
@@ -82,7 +86,10 @@ export class GameService {
   /**
    * Validates if a position is already matched
    */
-  private isPositionMatched(matchedCards: string[], position: CardPosition): boolean {
+  private isPositionMatched(
+    matchedCards: string[],
+    position: CardPosition,
+  ): boolean {
     return matchedCards.includes(position);
   }
 
@@ -102,21 +109,23 @@ export class GameService {
   }> {
     // Validate positions
     if (!isValidPosition(position1) || !isValidPosition(position2)) {
-      throw new Error('Invalid card position format');
+      throw new BadRequestException(
+        'Invalid card position format. Must be A-D and 1-4 (e.g., A1, B3, D4)',
+      );
     }
 
     if (position1 === position2) {
-      throw new Error('Cannot select the same card twice');
+      throw new BadRequestException('Cannot select the same card twice');
     }
 
     // Get game
     const game = await this.getGameById(gameId);
     if (!game) {
-      throw new Error('Game not found');
+      throw new NotFoundException(`Game with ID '${gameId}' not found`);
     }
 
     if (game.status === GameStatus.COMPLETED) {
-      throw new Error('Game is already completed');
+      throw new BadRequestException('Game is already completed');
     }
 
     // Check if cards are already matched
@@ -124,7 +133,7 @@ export class GameService {
       this.isPositionMatched(game.matchedCards, position1) ||
       this.isPositionMatched(game.matchedCards, position2)
     ) {
-      throw new Error('One or both cards are already matched');
+      throw new BadRequestException('One or both cards are already matched');
     }
 
     // Get card values
@@ -179,7 +188,7 @@ export class GameService {
   async getGameHistory(gameId: string) {
     const game = await this.getGameById(gameId);
     if (!game) {
-      throw new Error('Game not found');
+      throw new NotFoundException(`Game with ID '${gameId}' not found`);
     }
 
     const attempts = await this.attemptModel

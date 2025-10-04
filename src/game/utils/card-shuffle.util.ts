@@ -48,4 +48,3 @@ export function createShuffledBoard(): string[][] {
 
   return board;
 }
-
