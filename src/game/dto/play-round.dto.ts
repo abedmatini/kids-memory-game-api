@@ -1,6 +1,12 @@
 import { IsString, Matches, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class PlayRoundDto {
+  @ApiProperty({
+    description: 'First card position in format [A-D][1-4]',
+    example: 'A1',
+    pattern: '^[A-D][1-4]$',
+  })
   @IsString()
   @IsNotEmpty()
   @Matches(/^[A-D][1-4]$/, {
@@ -8,6 +14,11 @@ export class PlayRoundDto {
   })
   position1: string;
 
+  @ApiProperty({
+    description: 'Second card position in format [A-D][1-4]',
+    example: 'B2',
+    pattern: '^[A-D][1-4]$',
+  })
   @IsString()
   @IsNotEmpty()
   @Matches(/^[A-D][1-4]$/, {
