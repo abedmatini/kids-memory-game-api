@@ -75,7 +75,41 @@ A professional, production-ready RESTful API for a kids memory card matching gam
 
 ---
 
-## 🚀 Quick Start
+## � Prerequisites
+
+Before running this project, ensure you have:
+
+### For Docker Setup (Recommended)
+
+- **Docker**: 20.x or higher - [Install Docker](https://docs.docker.com/get-docker/)
+- **Docker Compose**: 2.x or higher - [Install Docker Compose](https://docs.docker.com/compose/install/)
+
+### For Manual Setup
+
+- **Node.js**: 18.x or higher - [Download Node.js](https://nodejs.org/)
+- **npm**: 9.x or higher (comes with Node.js)
+- **MongoDB**: 6.x or higher - [Install MongoDB](https://www.mongodb.com/docs/manual/installation/)
+
+### Verify Installation
+
+```bash
+# Check Node.js version
+node --version
+
+# Check npm version
+npm --version
+
+# Check Docker version (if using Docker)
+docker --version
+docker-compose --version
+
+# Check MongoDB version (if using manual setup)
+mongod --version
+```
+
+---
+
+## �🚀 Quick Start
 
 ### Using Docker (Recommended)
 
@@ -94,18 +128,80 @@ docker-compose up -d
 
 ### Manual Setup
 
+#### Step 1: Clone and Install Dependencies
+
 ```bash
+# Clone the repository
+git clone https://github.com/abedmatini/kids-memory-game-api.git
+cd kids-memory-game-api
+
 # Install dependencies
 npm install
+```
 
-# Start MongoDB locally
-# (or use: docker-compose up -d mongodb)
+#### Step 2: Configure Environment Variables
 
-# Run in development mode
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env file with your settings (optional, defaults should work)
+# The default MongoDB URI is: mongodb://localhost:27017/kids-memory-game
+```
+
+#### Step 3: Start MongoDB
+
+**Option A: Using Docker (Easier)**
+
+```bash
+docker-compose up -d mongodb
+```
+
+**Option B: Local MongoDB Installation**
+
+_Windows:_
+
+```powershell
+# Start MongoDB service
+net start MongoDB
+```
+
+_macOS (using Homebrew):_
+
+```bash
+brew services start mongodb-community
+```
+
+_Linux:_
+
+```bash
+sudo systemctl start mongod
+```
+
+#### Step 4: Run the Application
+
+```bash
+# Development mode (with hot-reload)
 npm run start:dev
 
-# Run tests
+# Production mode
+npm run build
+npm run start:prod
+```
+
+#### Step 5: Verify It's Running
+
+- API: http://localhost:3000
+- Swagger Docs: http://localhost:3000/api/docs
+
+#### Step 6: Run Tests (Optional)
+
+```bash
+# Run all tests
 npm test
+
+# Run tests with coverage
+npm run test:cov
 ```
 
 ---

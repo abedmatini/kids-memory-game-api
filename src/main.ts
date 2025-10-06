@@ -6,6 +6,14 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Enable CORS so the frontend (Vite) can call the API during development
+  // Allow only the frontend dev origin for safety
+  app.enableCors({
+    origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+
   // Enable global validation
   app.useGlobalPipes(
     new ValidationPipe({
